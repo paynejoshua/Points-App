@@ -1,0 +1,28 @@
+GET  http://localhost:5000/points/
+
+###
+
+GET  http://localhost:5000/points/92d6b6ad-c6f2-4321-9ab6-dc2c6d92cd39
+
+###
+
+POST http://localhost:5000/points/
+content-type: application/json
+
+{
+    "payer": "Coors",
+    "points": 800
+
+}
+
+
+###
+DELETE http://localhost:5000/points/92d6b6ad-c6f2-4321-9ab6-dc2c6d92cd39
+
+###
+
+
+###
+
+
+###
