@@ -24,7 +24,7 @@ router.get("/:id", async (req, res) => {
     try {
 
         let user = await global.database.get(req.params.id)
-        res.send(user)
+        res.status(200).json(user)
         console.log("here 1", user)
     } catch (err) {
         return res.status(404).json("User Not Found")
@@ -37,7 +37,7 @@ router.post("/", async (req, res,) => {
 
     try {
         console.log(req.body.payer, req.body.points)
-        const newUser = await global.database.add(req.body.payer, req.body.points)
+        const newUser = global.database.add(req.body.payer, req.body.points)
         res.status(201).json(newUser)
     } 
     catch (err) {
@@ -47,8 +47,23 @@ router.post("/", async (req, res,) => {
     }
 });
 
-router.patch("/:id", (req, res) =>{
+router.put("/", async (req, res) =>{
     
+   
+    try{
+        console.log("@put route 1")
+        const updatedUser = {
+            id: req.body.id,
+            payer: req.body.payer,
+            points: req.body.points,
+            timeStamp: Date.now()
+        } 
+        console.log("@put route 2", updatedUser.id)
+        const userToUpdate = await global.database.update(updatedUser)
+        res.status(201).json(userToUpdate)
+    } catch (err){
+        return res.status(404).json({ message: err.message })
+    }
 })
 
 router.delete("/:id", async (req, res) => {
@@ -59,25 +74,6 @@ router.delete("/:id", async (req, res) => {
         res.status(500).json({ message: err.message })
     }
 })
-
-// async function getUser(req, res, next){
-    
-//     let user;
-//     try{
-        
-//         user = await global.database.get(req.params.id)
-//         console.log("here", user)
-//         if(user === null){
-//             return res.status(404).json({ message: "Cannot find User" })
-//         }
-//     } catch (err) {
-//         return res.status(500).json({ message: err.message })
-//     }
-//     console.log("here",user.payer)
-//     res.user = user
-//     next()
-// }
-
 
 
 module.exports = router

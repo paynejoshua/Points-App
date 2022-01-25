@@ -18,8 +18,10 @@ class Database {
 
             this.update(userToUpdate)
         } else {
-            this.users.push(new User(uuidv4(), payer, points, Date.now()))
-            console.log("here 2", this.users)
+            let newID = uuidv4()
+            this.users.push(new User(newID, payer, points, Date.now()))
+            let newUser = this.users.find(user => user.id === newID)
+            return newUser 
         }
     }
     all() {
@@ -30,7 +32,6 @@ class Database {
     }
 
     update(user) {
-        console.log("@update", user)
         if (!user) {
             return
         }
@@ -41,6 +42,8 @@ class Database {
         }
 
         this.users[userIndex] = user
+        let updatedUser = this.users.find(userToUpdate => userToUpdate.id === user.id)
+        return updatedUser
     }
 
     delete(id) {
