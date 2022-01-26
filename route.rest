@@ -15,7 +15,8 @@ content-type: application/json
 
 {
     "payer": "Dannon",
-    "points": 500
+    "points": 300,
+    "timeStamp": "2020-10-31T10:00:00Z"
 
 }
 
@@ -29,12 +30,18 @@ PUT  http://localhost:5000/points/
 Content-Type: application/json
 
 {
-    "id": "4d78ac2d-01fc-40c8-b421-604924926db5",
+    "id": "861cdb60-8dff-47fd-b609-0c7ce8e308c6",
     "payer": "Dannon",
-    "points": -300
+    "points": 1000
 }
 
 ###
 
+PUT http://localhost:5000/points/spend
+Content-Type: application/json
+
+{
+    "points": 500
+}
 
 ###

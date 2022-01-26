@@ -32,12 +32,12 @@ router.get("/", async (req, res) => {
 // })
 
 router.get("/balance", async (req, res) => {
-    try{
+    try {
         const users = global.database.all()
         let usersBalance = {}
-        
+
         users.map(item => {
-            usersBalance[item.payer] =  item.pointsBalance
+            usersBalance[item.payer] = item.pointsBalance
         })
         console.log(usersBalance)
         res.status(200).json(usersBalance)
@@ -48,10 +48,19 @@ router.get("/balance", async (req, res) => {
 
 router.post("/", async (req, res, ) => {
 
+    const toTimeStamp = (strDate) => {  
+        if(strDate === ""){
+            return ""
+        } else {
+        const dt = new Date(strDate).getTime();  
+        return dt / 1000; 
+         }
+      }  
+      let timeStamp = toTimeStamp(req.body.timeStamp)
+      console.log("@post", timeStamp)
 
     try {
-        console.log(req.body.payer, req.body.points)
-        const newUser = global.database.add(req.body.payer, req.body.points)
+        const newUser = global.database.add(req.body.payer, req.body.points, timeStamp)
         res.status(201).json(newUser)
     }
     catch (err) {
@@ -65,7 +74,6 @@ router.put("/", async (req, res) => {
 
 
     try {
-        console.log("@put route 1")
         const updatedUser = {
             id: req.body.id,
             payer: req.body.payer,
@@ -78,6 +86,21 @@ router.put("/", async (req, res) => {
     } catch (err) {
         console.log("@update Error")
         return res.status(404).json({ message: err.message })
+    }
+})
+
+router.put("/spend", (req, res) => {
+    try {
+        let spendArray = []
+
+        let users = global.database.all()
+
+        //how to get timeStamp:  users[0].pointsLog[0].timeStamp
+
+
+        res.status(200).json(spendArray)
+    } catch (err) {
+        return res.status(500).json({ message: err.message })
     }
 })
 

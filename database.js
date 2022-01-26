@@ -4,7 +4,7 @@ class Database {
     constructor() {
         this.users = []
     }
-    add(payer, points) {
+    add(payer, points, timeStamp) {
 
         if (this.users.findIndex(userToFind => userToFind.payer === payer) !== -1) {
             let userToFind = this.users.find(user => user.payer === payer)
@@ -12,8 +12,8 @@ class Database {
                 id: userToFind.id,
                 payer: payer,
                 points: points,
-                timeStamp: Date.now()
-                
+                timeStamp: timeStamp
+
             }
 
             this.update(userToUpdate)
@@ -21,9 +21,11 @@ class Database {
             let newID = uuidv4()
             let pointsBalance = points
 
-            this.users.push(new User(newID, payer, pointsBalance, points, Date.now()))
+            let timeStampToUse = timeStamp === "" ? Date.now() : timeStamp
+
+            this.users.push(new User(newID, payer, pointsBalance, points, timeStampToUse))
             let newUser = this.users.find(user => user.id === newID)
-            return newUser 
+            return newUser
         }
     }
     all() {
@@ -45,15 +47,15 @@ class Database {
 
         let newPoints = {
             points: user.points,
-            timeStamp: Date.now()
+            timeStamp: user.timeStamp === "" ? Date.now() : user.timeStamp
         }
         let userToUpdate = this.users[userIndex]
         userToUpdate.payer = user.payer
         userToUpdate.pointsLog.push(newPoints)
 
-        let pointsBalance = userToUpdate.pointsLog.reduce((n, {points}) => n + points, 0);
+        let pointsBalance = userToUpdate.pointsLog.reduce((n, { points }) => n + points, 0);
 
-        console.log("@update", userToUpdate.pointsLog.reduce((n, {points}) => n + points, 0))
+        userToUpdate.pointsLog.sort((a,b) => a.timeStamp - b.timeStamp)
 
         userToUpdate.pointsBalance = pointsBalance
 
@@ -73,9 +75,10 @@ class User {
         this.id = id,
             this.payer = payer,
             this.pointsBalance = pointsBalance
-            this.pointsLog = [{
-                points: points,
-                timeStamp:  timeStamp}]
+        this.pointsLog = [{
+            points: points,
+            timeStamp: timeStamp
+        }]
     }
 
 }
