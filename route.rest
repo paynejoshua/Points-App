@@ -10,14 +10,14 @@ POST http://localhost:5000/points/
 content-type: application/json
 
 {
-    "payer": "Dannon",
-    "points": 1000
+    "payer": "Coors",
+    "points": 500
 
 }
 
 
 ###
-DELETE http://localhost:5000/points/92d6b6ad-c6f2-4321-9ab6-dc2c6d92cd39
+DELETE http://localhost:5000/points/0a95a291-1b10-455c-8641-c2244a9ecd53
 
 ###
 
@@ -25,9 +25,9 @@ PUT  http://localhost:5000/points/
 Content-Type: application/json
 
 {
-    "id": "c5007f26-6f74-499b-8022-08beb7fd00be",
-    "payer": "Coors",
-    "points": 1100
+    "id": "4d78ac2d-01fc-40c8-b421-604924926db5",
+    "payer": "Dannon",
+    "points": -300
 }
 
 ###

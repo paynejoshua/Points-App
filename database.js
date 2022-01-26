@@ -14,12 +14,15 @@ class Database {
                 payer: payer,
                 points: points,
                 timeStamp: Date.now()
+                
             }
 
             this.update(userToUpdate)
         } else {
             let newID = uuidv4()
-            this.users.push(new User(newID, payer, points, Date.now()))
+            let pointsBalance = points
+
+            this.users.push(new User(newID, payer, pointsBalance, points, Date.now()))
             let newUser = this.users.find(user => user.id === newID)
             return newUser 
         }
@@ -41,7 +44,20 @@ class Database {
             return
         }
 
-        this.users[userIndex] = user
+        let newPoints = {
+            points: user.points,
+            timeStamp: Date.now()
+        }
+        let userToUpdate = this.users[userIndex]
+        userToUpdate.payer = user.payer
+        userToUpdate.pointsLog.push(newPoints)
+
+        let pointsBalance = userToUpdate.pointsLog.reduce((n, {points}) => n + points, 0);
+
+        console.log("@update", userToUpdate.pointsLog.reduce((n, {points}) => n + points, 0))
+
+        userToUpdate.pointsBalance = pointsBalance
+
         let updatedUser = this.users.find(userToUpdate => userToUpdate.id === user.id)
         return updatedUser
     }
@@ -54,11 +70,13 @@ class Database {
 
 class User {
 
-    constructor(id, payer, points, timeStamp) {
+    constructor(id, payer, pointsBalance, points, timeStamp) {
         this.id = id,
             this.payer = payer,
-            this.points = points,
-            this.timeStamp = timeStamp
+            this.pointsBalance = pointsBalance
+            this.pointsLog = [{
+                points: points,
+                timeStamp:  timeStamp}]
     }
 
 }
