@@ -20,16 +20,30 @@ router.get("/", async (req, res) => {
 
 });
 
-router.get("/:id", async (req, res) => {
-    try {
+// router.get("/:id", async (req, res) => {
+//     try {
 
-        let user = await global.database.get(req.params.id)
-        res.status(200).json(user)
-        console.log("here 1", user)
+//         let user = await global.database.get(req.params.id)
+//         res.status(200).json(user)
+//     } catch (err) {
+//         return res.status(404).json("User Not Found")
+//     }
+
+// })
+
+router.get("/balance", async (req, res) => {
+    try{
+        const users = global.database.all()
+        let usersBalance = {}
+        
+        users.map(item => {
+            usersBalance[item.payer] =  item.pointsBalance
+        })
+        console.log(usersBalance)
+        res.status(200).json(usersBalance)
     } catch (err) {
         return res.status(404).json("User Not Found")
     }
-
 })
 
 router.post("/", async (req, res, ) => {

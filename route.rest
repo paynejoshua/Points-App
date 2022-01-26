@@ -6,11 +6,15 @@ GET  http://localhost:5000/points/92d6b6ad-c6f2-4321-9ab6-dc2c6d92cd39
 
 ###
 
+GET http://localhost:5000/points/balance
+
+###
+
 POST http://localhost:5000/points/
 content-type: application/json
 
 {
-    "payer": "Coors",
+    "payer": "Dannon",
     "points": 500
 
 }

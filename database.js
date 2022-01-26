@@ -8,7 +8,6 @@ class Database {
 
         if (this.users.findIndex(userToFind => userToFind.payer === payer) !== -1) {
             let userToFind = this.users.find(user => user.payer === payer)
-            console.log("@userToFind", userToFind)
             let userToUpdate = {
                 id: userToFind.id,
                 payer: payer,
