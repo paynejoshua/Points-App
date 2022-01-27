@@ -1,47 +1,69 @@
-GET  http://localhost:5000/points/
+GET  http://localhost:5000/
 
 ###
 
-GET  http://localhost:5000/points/92d6b6ad-c6f2-4321-9ab6-dc2c6d92cd39
-
-###
-
-GET http://localhost:5000/points/balance
-
-###
-
-POST http://localhost:5000/points/
+POST http://localhost:5000/
 content-type: application/json
 
 {
-    "payer": "Dannon",
-    "points": 300,
-    "timeStamp": "2020-10-31T10:00:00Z"
+    "payer": "Coors",
+    "points": 500,
+    "timeStamp": "2017-10-31T15:00:00Z"
 
 }
 
+###
+Get http://localhost:5000/balance
 
 ###
-DELETE http://localhost:5000/points/0a95a291-1b10-455c-8641-c2244a9ecd53
 
-###
-
-PUT  http://localhost:5000/points/
-Content-Type: application/json
+POST http://localhost:5000/spend
+content-type: application/json
 
 {
-    "id": "861cdb60-8dff-47fd-b609-0c7ce8e308c6",
-    "payer": "Dannon",
-    "points": 1000
+    "points": 700
 }
 
 ###
-
-PUT http://localhost:5000/points/spend
-Content-Type: application/json
 
 {
-    "points": 500
-}
-
-###
+    "id": "6b478dd8-7a98-4882-b3a0-c33c8da23766",
+    "payer": "Dannon",
+    "pointsBalance": 1100,
+    "pointsLog": [
+      {
+        "points": 300,
+        "timeStamp": 1604138400
+      },
+      {
+        "points": -200,
+        "timeStamp": 1604156400
+      },
+      {
+        "points": 1000,
+        "timeStamp": 1604325600
+      }
+    ]
+  },
+  {
+    "id": "b7135eea-28eb-4067-9745-6e5f0e6c54fc",
+    "payer": "Unilever",
+    "pointsBalance": 200,
+    "pointsLog": [
+      {
+        "points": 200,
+        "timeStamp": 1604142000
+      }
+    ]
+  },
+  {
+    "id": "dcb23427-8343-420b-be03-185fca1ebd79",
+    "payer": "Miller Coors",
+    "pointsBalance": 10000,
+    "pointsLog": [
+      {
+        "points": 10000,
+        "timeStamp": 1604239200
+      }
+    ]
+  }

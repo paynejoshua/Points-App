@@ -1,17 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { User } = require('../database')
-
-
-
+const { Transaction } = require('../database')
 
 
 router.get("/", async (req, res) => {
 
     try {
-        const users = global.database.all()
-        console.log(users)
-        res.status(200).json(users)
+        const transactions = global.database.all()
+        console.log(transactions)
+        res.status(200).json(transactions)
         return
     } catch (err) {
         return res.status(500).json({ message: err.message })
@@ -20,98 +17,88 @@ router.get("/", async (req, res) => {
 
 });
 
-// router.get("/:id", async (req, res) => {
-//     try {
-
-//         let user = await global.database.get(req.params.id)
-//         res.status(200).json(user)
-//     } catch (err) {
-//         return res.status(404).json("User Not Found")
-//     }
-
-// })
-
-router.get("/balance", async (req, res) => {
-    try {
-        const users = global.database.all()
-        let usersBalance = {}
-
-        users.map(item => {
-            usersBalance[item.payer] = item.pointsBalance
-        })
-        console.log(usersBalance)
-        res.status(200).json(usersBalance)
-    } catch (err) {
-        return res.status(404).json("User Not Found")
-    }
-})
-
 router.post("/", async (req, res, ) => {
 
-    const toTimeStamp = (strDate) => {  
-        if(strDate === ""){
-            return ""
-        } else {
-        const dt = new Date(strDate).getTime();  
-        return dt / 1000; 
-         }
-      }  
-      let timeStamp = toTimeStamp(req.body.timeStamp)
-      console.log("@post", timeStamp)
-
     try {
-        const newUser = global.database.add(req.body.payer, req.body.points, timeStamp)
-        res.status(201).json(newUser)
+        const newTransaction = global.database.add(req.body.payer, req.body.points, req.body.timeStamp)
+        res.status(201).json(newTransaction)
     }
     catch (err) {
-        console.log("@postError", err)
         return res.status(400).json({ message: err.message })
 
     }
 });
 
-router.put("/", async (req, res) => {
 
-
+router.get("/balance", async (req, res) => {
     try {
-        const updatedUser = {
-            id: req.body.id,
-            payer: req.body.payer,
-            points: req.body.points,
-            timeStamp: Date.now()
-        }
-        console.log("@put route 2", updatedUser.id)
-        const userToUpdate = await global.database.update(updatedUser)
-        res.status(201).json(userToUpdate)
+        const transactions = global.database.all()
+        let payerBalance = {}
+
+        transactions.forEach(element => {
+            if (!payerBalance[element.payer]) {
+                payerBalance[element.payer] = element.points
+            } else {
+                payerBalance[element.payer] += element.points
+            }
+        });
+        res.status(200).json(payerBalance)
     } catch (err) {
-        console.log("@update Error")
-        return res.status(404).json({ message: err.message })
+        return res.status(500)
     }
 })
 
-router.put("/spend", (req, res) => {
+router.post("/spend", (req, res) => {
     try {
-        let spendArray = []
 
-        let users = global.database.all()
+        const transactions = [...global.database.all()].sort((a,b) => (a.timeStamp < b.timeStamp) ? -1 : 1)
 
-        //how to get timeStamp:  users[0].pointsLog[0].timeStamp
+        let remainingPointsToSpend = req.body.points
+
+        let payerSpending = {}
+
+        for (let i = 0; transactions.length; i++){
+            console.log("here 1", transactions)
+            if(remainingPointsToSpend === 0 ){
+                
+                break
+            }
+            // failing here after going through and deleting out the first payer
+            let pointsSpendForTransaction = 0;
 
 
-        res.status(200).json(spendArray)
+            if(remainingPointsToSpend >= transactions[i].points){
+                pointsSpendForTransaction = transactions[i].points
+                remainingPointsToSpend -= transactions[i].points
+                global.database.delete(transactions[i].id)
+            
+
+            } else {
+                pointsSpendForTransaction = remainingPointsToSpend
+                transactions[i].points -= remainingPointsToSpend
+                console.log("here1")
+                global.database.update(transactions[i])
+                console.log("here 2")
+
+                remainingPointsToSpend = 0
+            }
+
+            if(!payerSpending[transactions[i].payer]){
+                payerSpending[transactions[i].payer] = -pointsSpendForTransaction
+            } else{
+                payerSpending[transactions[i].payer] -= pointsSpendForTransaction
+            }
+            
+        }
+
+        res.status(200).json(payerSpending)
+
     } catch (err) {
+        console.log("@spendError")
         return res.status(500).json({ message: err.message })
     }
 })
 
-router.delete("/:id", async (req, res) => {
-    try {
-        await global.database.delete(req.params.id)
-        res.json("User Removed")
-    } catch (err) {
-        res.status(500).json({ message: err.message })
-    }
-})
 
 
 module.exports = router

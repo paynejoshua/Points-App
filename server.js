@@ -9,7 +9,7 @@ const app = express()
 app.use(express.json())
 
 const pointsRouter = require("./routes/points")
-app.use('/points', pointsRouter)
+app.use('/', pointsRouter)
 
 const port = process.env.PORT || 4001
 
